@@ -26,7 +26,7 @@
     .viewer { display: grid; place-items: center; background: #cac0b1; border: 1px solid #baae9f; padding: clamp(.35rem, 1.5vw, 1.2rem); min-height: 45vh; }
     .page { display: block; width: auto; max-width: 100%; max-height: min(75dvh, 1120px); aspect-ratio: 210 / 297; object-fit: contain; background: white; box-shadow: 0 8px 35px #211b1640; }
     .page.turn { animation: turn .22s ease-out; }
-    .viewer.is-zoomed { display: block; height: min(75dvh, 800px); overflow: auto; direction: ltr; }
+    .viewer.is-zoomed { display: block; height: min(75dvh, 800px); overflow: auto; direction: ltr; justify-items: start; }
     .viewer.is-zoomed .page { width: min(220%, 910px); max-width: none; max-height: none; height: auto; margin: 0; }
     @keyframes turn { from { opacity: .45; transform: translateX(8px); } to { opacity: 1; transform: none; } }
     .controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: .9rem 0; }
