@@ -6,7 +6,7 @@
       lede: "Both drafts can be opened. Neither is signed. The manuscripts are in English.", kind: "Manuscript",
       whyStatus: "English research draft · 32 A4 pages · five labeled editorial images. Unsigned.",
       methodStatus: "English method draft · 14 A4 pages · two labeled editorial images. Unsigned.",
-      turn: "Turn pages", text: "Text version", pdf: "Download PDF", enlarge: "Enlarge page",
+      turn: "Turn pages", text: "Text version", pdf: "Download PDF", enlarge: "Enlarge page", zoom: "Zoom ×2", fit: "Fit page",
       prev: "← Previous", next: "Next →", page: "Page", of: "of",
       readerHint: "Use the arrow keys or swipe to turn pages. On a phone, choose Text version for readable type. The manuscript is in English."
     },
@@ -16,7 +16,7 @@
       lede: "Les deux brouillons sont consultables. Aucun n'est signé. Les textes des livres sont en anglais.", kind: "Manuscrit",
       whyStatus: "Recherche en anglais · 32 pages A4 · cinq images éditoriales signalées. Non signé.",
       methodStatus: "Méthode en anglais · 14 pages A4 · deux images éditoriales signalées. Non signé.",
-      turn: "Feuilleter", text: "Lire le texte", pdf: "Télécharger le PDF", enlarge: "Agrandir la page",
+      turn: "Feuilleter", text: "Lire le texte", pdf: "Télécharger le PDF", enlarge: "Agrandir la page", zoom: "Zoom ×2", fit: "Adapter la page",
       prev: "← Précédente", next: "Suivante →", page: "Page", of: "sur",
       readerHint: "Utilisez les flèches ou balayez l'écran. Sur téléphone, choisissez Lire le texte pour une taille lisible. Le manuscrit est en anglais."
     },
@@ -26,7 +26,7 @@
       lede: "אפשר לעיין בשתי הטיוטות. אף אחת מהן אינה חתומה. תוכן הספרים באנגלית.", kind: "כתב יד",
       whyStatus: "טיוטת מחקר באנגלית · 32 עמודי A4 · חמש תמונות עריכה מסומנות. לא חתומה.",
       methodStatus: "טיוטת שיטה באנגלית · 14 עמודי A4 · שתי תמונות עריכה מסומנות. לא חתומה.",
-      turn: "דפדוף", text: "קריאת הטקסט", pdf: "הורדת PDF", enlarge: "הגדלת העמוד",
+      turn: "דפדוף", text: "קריאת הטקסט", pdf: "הורדת PDF", enlarge: "הגדלת העמוד", zoom: "הגדלה ×2", fit: "התאמה למסך",
       prev: "→ הקודם", next: "הבא ←", page: "עמוד", of: "מתוך",
       readerHint: "אפשר לדפדף בחצים או בהחלקה. בטלפון עדיף לבחור בקריאת הטקסט. כתב היד עצמו באנגלית."
     }

@@ -3,6 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="../../site/favicon.svg" type="image/svg+xml">
   <meta name="robots" content="noindex">
   <title>Reading room · The Kosher Option</title>
   <style>
@@ -20,10 +21,13 @@
     .heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .7rem 1.5rem; margin-bottom: 1rem; }
     h1 { font: 400 clamp(1.7rem, 4vw, 2.7rem)/1.1 Georgia, serif; letter-spacing: -.025em; margin: 0; }
     .subtitle { color: var(--muted); font-size: .88rem; margin: .45rem 0 0; }
-    .format { display: flex; gap: 1rem; font-size: .85rem; }
+    .format { display: flex; flex-wrap: wrap; align-items: center; gap: .55rem 1rem; font-size: .85rem; }
+    .format button { border: 1px solid #a99b8a; background: var(--paper); color: var(--ink); padding: .3rem .55rem; }
     .viewer { display: grid; place-items: center; background: #cac0b1; border: 1px solid #baae9f; padding: clamp(.35rem, 1.5vw, 1.2rem); min-height: 45vh; }
     .page { display: block; width: auto; max-width: 100%; max-height: min(75dvh, 1120px); aspect-ratio: 210 / 297; object-fit: contain; background: white; box-shadow: 0 8px 35px #211b1640; }
     .page.turn { animation: turn .22s ease-out; }
+    .viewer.is-zoomed { display: block; height: min(75dvh, 800px); overflow: auto; direction: ltr; }
+    .viewer.is-zoomed .page { width: min(220%, 910px); max-width: none; max-height: none; height: auto; margin: 0; }
     @keyframes turn { from { opacity: .45; transform: translateX(8px); } to { opacity: 1; transform: none; } }
     .controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: .9rem 0; }
     .controls button { min-width: 5.5rem; background: var(--paper); border: 1px solid #a99b8a; border-radius: 2px; padding: .65rem .9rem; color: var(--ink); }
@@ -44,7 +48,7 @@
   <main>
     <div class="heading">
       <div><h1 id="book-title"></h1><p class="subtitle" id="book-subtitle"></p></div>
-      <div class="format"><a id="html-link" data-t="text">Text version</a><a id="full-page" target="_blank" rel="noopener" data-t="enlarge">Enlarge page</a><a id="pdf-link" data-t="pdf">Download PDF</a></div>
+      <div class="format"><a id="html-link" data-t="text">Text version</a><button id="zoom" type="button" aria-pressed="false" data-t="zoom">Zoom ×2</button><a id="full-page" target="_blank" rel="noopener" data-t="enlarge">Enlarge page</a><a id="pdf-link" data-t="pdf">Download PDF</a></div>
     </div>
     <div class="viewer" id="viewer"><img class="page" id="page" alt="" width="850" height="1202"></div>
     <div class="controls">
@@ -64,6 +68,8 @@
     const book = books[key];
     const t = window.tkoBooks.t;
     const page = document.getElementById("page");
+    const viewer = document.getElementById("viewer");
+    const zoom = document.getElementById("zoom");
     const seek = document.getElementById("seek");
     const position = document.getElementById("position");
     const prev = document.getElementById("previous");
@@ -86,6 +92,7 @@
       page.classList.add("turn");
       position.textContent = `${t.page} ${current} ${t.of} ${book.count}`;
       seek.value = String(current);
+      if (viewer.classList.contains("is-zoomed")) { viewer.scrollLeft = 0; viewer.scrollTop = 0; }
       prev.disabled = current === 1;
       next.disabled = current === book.count;
       if (current < book.count) { const preload = new Image(); preload.src = url(current + 1); }
@@ -93,6 +100,13 @@
     }
     prev.addEventListener("click", () => show(current - 1));
     next.addEventListener("click", () => show(current + 1));
+    zoom.addEventListener("click", () => {
+      const active = viewer.classList.toggle("is-zoomed");
+      zoom.setAttribute("aria-pressed", String(active));
+      zoom.textContent = active ? t.fit : t.zoom;
+      viewer.scrollLeft = 0;
+      viewer.scrollTop = 0;
+    });
     seek.addEventListener("input", () => show(Number(seek.value)));
     document.addEventListener("keydown", e => {
       if (e.key === "ArrowRight") show(current + 1);
