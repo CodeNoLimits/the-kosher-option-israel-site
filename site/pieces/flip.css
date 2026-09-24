@@ -1,0 +1,231 @@
+/* Brancher : <link rel="stylesheet" href="pieces/flip.css"><div data-flip></div><script src="pieces/flip.js"></script> */
+
+.tko-flip {
+  position: relative;
+  width: min(100%, 28rem, calc(64svh * 0.8));
+  margin-inline: auto;
+  color: var(--ink, #1a1612);
+  font-family: var(--sans, "Heebo", "Arial Hebrew", "Arial", sans-serif);
+}
+
+.tko-flip:focus {
+  outline: none;
+}
+
+.tko-flip:focus-visible {
+  outline: 2px solid var(--ink, #1a1612);
+  outline-offset: 3px;
+}
+
+.tko-flip [data-lang] {
+  display: none;
+}
+
+html[lang|="fr"] .tko-flip [data-lang="fr"],
+html[lang|="en"] .tko-flip [data-lang="en"],
+html[lang|="he"] .tko-flip [data-lang="he"],
+html:not([lang]) .tko-flip [data-lang],
+html[lang]:not([lang|="fr"]):not([lang|="en"]):not([lang|="he"]) .tko-flip [data-lang="fr"] {
+  display: block;
+}
+
+.tko-flip-stage {
+  position: relative;
+  aspect-ratio: 4 / 5;
+  touch-action: none;
+  cursor: grab;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-perspective: 1600px;
+  perspective: 1600px;
+}
+
+.tko-flip-stage.is-drag {
+  cursor: grabbing;
+}
+
+.tko-flip-deck {
+  position: absolute;
+  z-index: 0;
+  background: var(--paper, #f3eee6);
+  border: 1px solid var(--line, #d2c7b8);
+  inset-block-start: 5px;
+  inset-inline-start: 4px;
+  inset-block-end: -5px;
+  inset-inline-end: -4px;
+}
+
+.tko-flip-deck-far {
+  z-index: 0;
+  background: var(--lid, #e6d3b4);
+  inset-block-start: 10px;
+  inset-inline-start: 8px;
+  inset-block-end: -10px;
+  inset-inline-end: -8px;
+}
+
+.tko-flip-sheet {
+  position: absolute;
+  z-index: 1;
+  inset: 0;
+  transform-origin: 0% 50%;
+  transform: rotateY(calc(var(--turn, 0) * -180deg));
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+}
+
+html[dir="rtl"] .tko-flip-sheet,
+html[lang|="he"] .tko-flip-sheet {
+  transform-origin: 100% 50%;
+  transform: rotateY(calc(var(--turn, 0) * 180deg));
+}
+
+.tko-flip-face {
+  position: absolute;
+  inset: 0;
+  border: 1px solid var(--line, #d2c7b8);
+  background-color: var(--paper, #f3eee6);
+  background-image: url("../grain.svg");
+  background-size: 180px 180px;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+}
+
+.tko-flip-front::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: calc(var(--turn, 0) * (1 - var(--turn, 0)) * 4);
+  background: linear-gradient(to right, rgba(42, 27, 21, 0.18), transparent 46%);
+}
+
+html[dir="rtl"] .tko-flip-front::after,
+html[lang|="he"] .tko-flip-front::after {
+  background: linear-gradient(to left, rgba(42, 27, 21, 0.18), transparent 46%);
+}
+
+.tko-flip-back {
+  transform: rotateY(180deg);
+  visibility: hidden;
+}
+
+.tko-flip-sheet[data-hot="1"] .tko-flip-back {
+  visibility: visible;
+}
+
+.tko-flip-inner {
+  box-sizing: border-box;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: clamp(1.5rem, 4vw, 2.5rem);
+}
+
+.tko-flip-folio {
+  margin: 0;
+  align-self: start;
+  font-family: var(--display, "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif);
+  font-weight: 500;
+  font-size: clamp(1.35rem, 2.4vw, 1.85rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--wax, #722e2a);
+}
+
+.tko-flip-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  min-width: 0;
+}
+
+.tko-flip-rule {
+  display: block;
+  width: 2.5rem;
+  height: 1px;
+  margin: 0 0 1.25rem;
+  background: var(--wax, #722e2a);
+}
+
+.tko-flip-title {
+  margin: 0;
+  font-family: var(--display, "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif);
+  font-weight: 500;
+  font-size: clamp(2.15rem, 6.2vw, 4.05rem);
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+
+.tko-flip-lede {
+  margin: 1rem 0 0;
+  max-width: 16em;
+  font-family: var(--display, "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif);
+  font-weight: 400;
+  font-size: clamp(1.2rem, 2.1vw, 1.5rem);
+  line-height: 1.32;
+  color: var(--soft, #2c261f);
+}
+
+html[lang|="he"] .tko-flip-title,
+html[lang|="he"] .tko-flip-lede,
+.tko-flip-title [lang="he"],
+.tko-flip-lede [lang="he"] {
+  font-family: var(--hebrew, "Frank Ruhl Libre", "David Libre", "Times New Roman", serif);
+  letter-spacing: 0;
+}
+
+html[lang|="he"] .tko-flip-title {
+  line-height: 1.05;
+  font-weight: 600;
+}
+
+html[lang|="he"] .tko-flip-lede {
+  line-height: 1.45;
+}
+
+html[lang|="he"] .tko-flip-folio {
+  letter-spacing: 0;
+}
+
+.tko-flip-hint {
+  margin: 1.5rem 0 0;
+  font-family: var(--sans, "Heebo", "Arial Hebrew", "Arial", sans-serif);
+  font-size: 0.92rem;
+  line-height: 1.4;
+  color: var(--soft, #2c261f);
+}
+
+.tko-flip-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tko-flip-stage {
+    perspective: none;
+  }
+
+  .tko-flip-sheet,
+  .tko-flip-face,
+  .tko-flip-back {
+    transform: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .tko-flip-back,
+  .tko-flip-front::after {
+    display: none !important;
+  }
+}

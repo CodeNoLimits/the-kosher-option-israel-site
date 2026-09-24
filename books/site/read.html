@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Reading room · The Kosher Option</title>
+  <style>
+    :root { color-scheme: light; --ink: #201d1a; --paper: #f6f2eb; --muted: #655f58; --rule: #d8cec0; --accent: #793c35; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100dvh; background: #e8e1d7; color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+    a { color: inherit; }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; }
+    .bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: .7rem clamp(1rem, 3vw, 2rem); border-bottom: 1px solid var(--rule); background: var(--paper); }
+    .brand { font: italic 1.25rem Georgia, serif; text-decoration: none; }
+    .bar-note { color: var(--muted); font-size: .75rem; letter-spacing: .07em; text-transform: uppercase; text-align: right; }
+    main { width: min(100%, 88rem); margin: auto; padding: 1.2rem clamp(.7rem, 3vw, 2rem) 2rem; }
+    .heading { display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: .7rem 1.5rem; margin-bottom: 1rem; }
+    h1 { font: 400 clamp(1.7rem, 4vw, 2.7rem)/1.1 Georgia, serif; letter-spacing: -.025em; margin: 0; }
+    .subtitle { color: var(--muted); font-size: .88rem; margin: .45rem 0 0; }
+    .format { display: flex; gap: 1rem; font-size: .85rem; }
+    .viewer { display: grid; place-items: center; background: #cac0b1; border: 1px solid #baae9f; padding: clamp(.35rem, 1.5vw, 1.2rem); min-height: 45vh; }
+    .page { display: block; width: auto; max-width: 100%; max-height: min(75dvh, 1120px); aspect-ratio: 210 / 297; object-fit: contain; background: white; box-shadow: 0 8px 35px #211b1640; }
+    .page.turn { animation: turn .22s ease-out; }
+    @keyframes turn { from { opacity: .45; transform: translateX(8px); } to { opacity: 1; transform: none; } }
+    .controls { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1rem; padding: .9rem 0; }
+    .controls button { min-width: 5.5rem; background: var(--paper); border: 1px solid #a99b8a; border-radius: 2px; padding: .65rem .9rem; color: var(--ink); }
+    .controls button:disabled { opacity: .45; cursor: default; }
+    .position { display: grid; justify-items: center; gap: .25rem; }
+    .position output { color: var(--muted); font-size: .9rem; font-variant-numeric: tabular-nums; }
+    .position input { width: min(100%, 30rem); accent-color: var(--accent); }
+    .hint { margin: .25rem 0 0; color: var(--muted); font-size: .8rem; text-align: center; }
+    @media (max-width: 550px) { .controls { gap: .4rem; } .controls button { min-width: 4.4rem; padding: .55rem .35rem; } .bar-note { max-width: 9rem; } .viewer { min-height: 30vh; } }
+    @media (prefers-reduced-motion: reduce) { .page.turn { animation: none; } }
+  </style>
+</head>
+<body>
+  <header class="bar">
+    <a class="brand" href="index.html" data-t="room">Reading room</a>
+    <span class="bar-note" data-t="draftShort">Draft · unsigned · no partnership</span>
+  </header>
+  <main>
+    <div class="heading">
+      <div><h1 id="book-title"></h1><p class="subtitle" id="book-subtitle"></p></div>
+      <div class="format"><a id="html-link" data-t="text">Text version</a><a id="full-page" target="_blank" rel="noopener" data-t="enlarge">Enlarge page</a><a id="pdf-link" data-t="pdf">Download PDF</a></div>
+    </div>
+    <div class="viewer" id="viewer"><img class="page" id="page" alt="" width="850" height="1202"></div>
+    <div class="controls">
+      <button type="button" id="previous" aria-label="Previous page" data-t="prev">← Previous</button>
+      <div class="position"><output id="position" aria-live="polite"></output><input id="seek" type="range" min="1" step="1" aria-label="Select page"></div>
+      <button type="button" id="next" aria-label="Next page" data-t="next">Next →</button>
+    </div>
+    <p class="hint" data-t="readerHint">Use the arrow keys or swipe to turn pages. On a phone, choose Text version for readable type. The manuscript is in English.</p>
+  </main>
+  <script src="i18n.js"></script>
+  <script>
+    const books = {
+      why: { title: "Why the Table", subtitle: "A sealed plate, a shared table, and a restaurant that remains what it is.", count: 32, folder: "why", html: "../why-the-table/v2/book.html", pdf: "../why-the-table/v2/book.pdf" },
+      method: { title: "Publishing a Business Together", subtitle: "DreamNova and Leeya · a proposed method", count: 14, folder: "method", html: "../dreamnova-and-leeya/book.html", pdf: "../dreamnova-and-leeya/book.pdf" }
+    };
+    const key = new URLSearchParams(location.search).get("book") === "method" ? "method" : "why";
+    const book = books[key];
+    const t = window.tkoBooks.t;
+    const page = document.getElementById("page");
+    const seek = document.getElementById("seek");
+    const position = document.getElementById("position");
+    const prev = document.getElementById("previous");
+    const next = document.getElementById("next");
+    document.title = `${book.title} · ${t.room}`;
+    document.getElementById("book-title").textContent = book.title;
+    document.getElementById("book-subtitle").textContent = book.subtitle;
+    document.getElementById("html-link").href = book.html;
+    document.getElementById("pdf-link").href = book.pdf;
+    seek.max = String(book.count);
+    let current = 1;
+    function url(n) { return `pages/${book.folder}/page-${String(n).padStart(3, "0")}.jpg`; }
+    function show(n) {
+      current = Math.max(1, Math.min(book.count, n));
+      page.src = url(current);
+      document.getElementById("full-page").href = url(current);
+      page.alt = `${t.page} ${current} ${t.of} ${book.count} · ${book.title}`;
+      page.classList.remove("turn");
+      void page.offsetWidth;
+      page.classList.add("turn");
+      position.textContent = `${t.page} ${current} ${t.of} ${book.count}`;
+      seek.value = String(current);
+      prev.disabled = current === 1;
+      next.disabled = current === book.count;
+      if (current < book.count) { const preload = new Image(); preload.src = url(current + 1); }
+      history.replaceState(null, "", `${location.pathname}?book=${key}&page=${current}`);
+    }
+    prev.addEventListener("click", () => show(current - 1));
+    next.addEventListener("click", () => show(current + 1));
+    seek.addEventListener("input", () => show(Number(seek.value)));
+    document.addEventListener("keydown", e => {
+      if (e.key === "ArrowRight") show(current + 1);
+      if (e.key === "ArrowLeft") show(current - 1);
+    });
+    let touchX = null;
+    document.getElementById("viewer").addEventListener("touchstart", e => { touchX = e.changedTouches[0].screenX; }, { passive: true });
+    document.getElementById("viewer").addEventListener("touchend", e => {
+      if (touchX === null) return;
+      const distance = e.changedTouches[0].screenX - touchX;
+      if (Math.abs(distance) > 45) show(current + (distance < 0 ? 1 : -1));
+      touchX = null;
+    }, { passive: true });
+    const requested = Number(new URLSearchParams(location.search).get("page"));
+    show(Number.isInteger(requested) && requested > 0 ? requested : 1);
+  </script>
+</body>
+</html>

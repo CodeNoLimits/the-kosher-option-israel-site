@@ -1,0 +1,38 @@
+/* Two editorial interactions recovered from the Cursor prototypes. */
+[data-tri]{display:none}
+html[lang="he"] [data-tri="he"],html[lang="fr"] [data-tri="fr"],html[lang="en"] [data-tri="en"]{display:inline}
+
+.interaction-lab,.folio-workshop{position:relative;overflow:hidden}
+.interaction-lab{--ink:#281d17;--soft:#57493c;--line:#c8b9a3;--wax:#755237;--paper:#f4eee4;background:#e9dfcf;color:#281d17}
+.interaction-lab::before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;background:radial-gradient(circle at 80% 45%,#fff5df,transparent 42%),repeating-linear-gradient(0deg,transparent 0 7px,#c1a98a11 8px)}
+.interaction-lab .section-index{position:relative;border-color:#aa987f;color:#6e5d4e}
+.interaction-lab .eyebrow{color:#78573b}
+.interaction-grid{position:relative;display:grid;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);align-items:center;gap:clamp(2rem,6vw,7rem);max-width:1500px;margin:clamp(3rem,5vw,5rem) auto 0}
+.interaction-copy{min-width:0}
+.interaction-copy h2{font-size:clamp(3.2rem,5.8vw,7rem);max-width:11ch;margin:0 0 1.7rem}
+.interaction-copy p:not(.eyebrow){font-size:clamp(1rem,1.4vw,1.25rem);line-height:1.7;max-width:36rem;margin:0 0 2rem;color:inherit;opacity:.83}
+.interaction-copy .inline-link{color:inherit}
+.interaction-exhibit{min-width:0;padding:clamp(1rem,2vw,2rem);border:1px solid #b9a88d;background:#f1e8da;box-shadow:0 34px 75px #56422d29}
+.interaction-exhibit .eclate{max-width:720px;margin-inline:auto;--ink:#281d17;--soft:#57493c;--line:#c8b9a3;--wax:#755237;--paper:#f4eee4}
+.interaction-exhibit .eclate-hint{justify-content:center}
+.interaction-exhibit .eclate [lang]{display:none}
+html[lang="he"] .interaction-exhibit .eclate [lang="he"],html[lang="fr"] .interaction-exhibit .eclate [lang="fr"],html[lang="en"] .interaction-exhibit .eclate [lang="en"]{display:inline}
+.interaction-exhibit .eclate .eclate-names span::after{display:none}
+
+.folio-workshop{--ink:#261a15;--soft:#6b5546;--line:#c8b9a3;--wax:#755237;--paper:#f4eee4;background:radial-gradient(circle at 80% 20%,#4b3328 0,#261a15 42%,#17110e 90%);color:#f6eee4}
+.folio-workshop .section-index{border-color:#af9a873d;color:#cebcaa}
+.folio-workshop .eyebrow{color:#e1bc8c}
+.folio-workshop .interaction-copy h2{max-width:12ch}
+.folio-workshop .interaction-copy p:not(.eyebrow){color:#e2d4c5}
+.folio-workshop .interaction-copy .inline-link{color:#f6eee4}
+.folio-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+.flip-exhibit{min-width:0;padding:clamp(1.3rem,3.8vw,3.6rem);background:linear-gradient(135deg,#b29b79,#725844 70%,#4f392d);box-shadow:0 34px 75px #0b080780;transform:rotate(1deg)}
+.flip-exhibit .tko-flip{--ink:#261a15;--soft:#6b5546;--line:#c8b9a3;--wax:#755237;--paper:#f4eee4}
+.flip-exhibit .tko-flip-hint{color:#f8eee2;text-align:center}
+.library-downloads{display:flex;flex-wrap:wrap;gap:.75rem 1.5rem;margin-top:1.4rem}
+.library-downloads a{font-size:.78rem;font-weight:700;letter-spacing:.04em;text-decoration:none;border-bottom:1px solid currentColor;padding-bottom:.2rem}
+.library-downloads a:hover{color:#e2c39c}
+
+@media(max-width:850px){.interaction-grid,.folio-grid{grid-template-columns:1fr}.interaction-copy h2{font-size:clamp(3.2rem,10vw,5.5rem)}.interaction-exhibit,.flip-exhibit{width:100%}.flip-exhibit{transform:none}}
+@media(max-width:390px){.interaction-lab,.folio-workshop{padding-inline:1rem}.interaction-exhibit{padding:.5rem}.interaction-exhibit .eclate{--callout:6rem}}
+@media(prefers-reduced-motion:reduce){.flip-exhibit{transform:none}}

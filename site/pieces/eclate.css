@@ -1,0 +1,506 @@
+/*
+  Pièce « plat éclaté ». Brancher dans une page du site
+  (le HTML vit à côté du dossier pieces/) :
+
+    <link rel="stylesheet" href="pieces/eclate.css">
+    <div id="eclate">
+      <p>Sceau, couvercle, plat, certificat. Pad autochauffant : option.
+      Exemple — pas un certificat, sans logo de rabbanut.</p>
+    </div>
+    <script src="pieces/eclate.js"></script>
+
+  Survol ou doigt : les couches se séparent. Détail du script : eclate.js.
+*/
+
+.eclate {
+  --stage: 468px;
+  --seal: 40px;
+  --lid-w: 152px;
+  --lid-h: 46px;
+  --plat-w: 170px;
+  --plat-h: 52px;
+  --cert-w: 112px;
+  --cert-h: 74px;
+  --pad-w: 160px;
+  --pad-h: 36px;
+  --callout: 6.5rem;
+  box-sizing: border-box;
+  min-width: 0;
+  max-width: 100%;
+  color: var(--ink, #1a1612);
+  font-family: var(--sans, "Heebo", "Arial Hebrew", Arial, sans-serif);
+  font-size: 1rem;
+  line-height: 1.45;
+}
+
+.eclate *,
+.eclate *::before,
+.eclate *::after { box-sizing: border-box; }
+
+.eclate-hint,
+.eclate-note,
+.eclate-legend { margin: 0; }
+
+.eclate-hint {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.7rem;
+  direction: ltr;
+  margin-block-end: 16px;
+  color: var(--soft, #2c261f);
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  line-height: 1.4;
+  text-transform: uppercase;
+}
+
+.eclate-hint [lang="he"] {
+  font-family: var(--hebrew, "Frank Ruhl Libre", "David Libre", "Times New Roman", serif);
+  font-size: 0.95rem;
+  letter-spacing: 0.01em;
+  text-transform: none;
+}
+
+.eclate-dot { color: var(--line, #d2c7b8); }
+
+.eclate-stage {
+  appearance: none;
+  -webkit-appearance: none;
+  display: block;
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  height: var(--stage);
+  margin: 0;
+  padding-block: 0;
+  padding-inline: 1.5rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.eclate-stage:focus { outline: none; }
+
+.eclate-stage:focus-visible {
+  outline: 2px solid var(--ink, #1a1612);
+  outline-offset: 3px;
+}
+
+.eclate-sr {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.eclate-stack {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.eclate-stack::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6%;
+  bottom: 6%;
+  width: 1px;
+  background: var(--line, #d2c7b8);
+  opacity: 0;
+  transform: translateX(-50%);
+  transition: opacity 240ms ease;
+  z-index: 0;
+}
+
+.eclate.is-open .eclate-stack::before { opacity: 1; }
+
+.eclate-layer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transform: translateY(calc(-50% + var(--y, 0px)));
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.2, 1);
+}
+
+.eclate-glyph {
+  display: block;
+  transition: transform 520ms cubic-bezier(0.22, 0.61, 0.2, 1);
+}
+
+.eclate-num {
+  position: absolute;
+  top: 50%;
+  inset-inline-start: calc(50% + var(--callout));
+  transform: translateY(-50%);
+  opacity: 0;
+  color: var(--wax, #722e2a);
+  font-family: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  font-size: 1rem;
+  line-height: 1;
+  transition: opacity 200ms ease;
+}
+
+.eclate.is-open .eclate-num { opacity: 1; }
+
+.eclate-seal { --y: -34px; z-index: 5; transition-delay: 80ms; }
+.eclate-lid { --y: -4px; z-index: 4; transition-delay: 60ms; }
+.eclate-plat { --y: 18px; z-index: 3; transition-delay: 40ms; }
+.eclate-cert { --y: 22px; z-index: 2; transition-delay: 20ms; }
+.eclate-pad { --y: 48px; z-index: 1; transition-delay: 0ms; }
+
+.eclate.is-open .eclate-seal { --y: -158px; transition-delay: 0ms; }
+.eclate.is-open .eclate-lid { --y: -86px; transition-delay: 40ms; }
+.eclate.is-open .eclate-plat { --y: 2px; transition-delay: 80ms; }
+.eclate.is-open .eclate-cert { --y: 100px; transition-delay: 120ms; }
+.eclate.is-open .eclate-pad { --y: 186px; transition-delay: 160ms; }
+
+.eclate-cert .eclate-glyph { transform: translateX(16px) rotate(-10deg); }
+.eclate.is-open .eclate-cert .eclate-glyph { transform: translateX(0) rotate(0deg); }
+
+.seal {
+  width: calc(var(--lid-w) * 0.72);
+  height: 17px;
+  border-radius: 3px;
+  display: grid;
+  place-items: center;
+  background: #d5c5ac;
+  border: 1px solid #9f8d74;
+  transform: rotate(-5deg);
+}
+
+.seal-ring {
+  width: 88%;
+  height: 1px;
+  border-top: 1px dashed #857259;
+}
+
+.lid {
+  position: relative;
+  display: block;
+  width: var(--lid-w);
+  height: calc(var(--lid-h) + 8px);
+}
+
+.lid-edge,
+.lid-top {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--lid-h);
+  border-radius: 50%;
+}
+
+.lid-edge {
+  top: 8px;
+  background: #b08960;
+}
+
+.lid-top {
+  top: 0;
+  background: radial-gradient(ellipse at 50% 40%, #f8edd9 0%, #e6d3b4 48%, #c9ae86 100%);
+}
+
+.lid-knob {
+  position: absolute;
+  width: 16px;
+  height: 11px;
+  left: 50%;
+  top: 34%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(ellipse at 40% 35%, #f6ead4, #cbb892);
+}
+
+.plat {
+  position: relative;
+  display: block;
+  width: var(--plat-w);
+  height: calc(var(--plat-h) + 12px);
+}
+
+.plat-shadow {
+  position: absolute;
+  left: 8%;
+  right: 8%;
+  bottom: -2px;
+  height: 14px;
+  background: radial-gradient(ellipse at center, rgba(36, 20, 12, 0.22), rgba(36, 20, 12, 0) 72%);
+}
+
+.plat-edge,
+.plat-face {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: var(--plat-h);
+  border-radius: 50%;
+}
+
+.plat-edge {
+  top: 8px;
+  background: #cfc3b4;
+}
+
+.plat-face {
+  top: 0;
+  overflow: hidden;
+  background: radial-gradient(ellipse at 50% 38%, #fffdf8 0%, #f7f3ec 54%, #e3d9cc 100%);
+}
+
+.food {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.food-a {
+  width: 38%;
+  height: 44%;
+  left: 22%;
+  top: 30%;
+  background: #7a4032;
+}
+
+.food-b {
+  width: 24%;
+  height: 34%;
+  right: 20%;
+  top: 38%;
+  background: #445036;
+}
+
+.cert {
+  width: var(--cert-w);
+  height: var(--cert-h);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  padding: 0.35rem 0.4rem;
+  border: 1px solid var(--line, #d2c7b8);
+  background: #f7f1e6;
+}
+
+.cert-rule {
+  width: 70%;
+  height: 1px;
+  background: var(--line, #d2c7b8);
+}
+
+.cert-words {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: var(--soft, #2c261f);
+  font-family: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  font-size: 0.68rem;
+  line-height: 1.2;
+}
+
+.cert-words [lang="he"] {
+  font-family: var(--hebrew, "Frank Ruhl Libre", "David Libre", "Times New Roman", serif);
+  font-size: 0.86rem;
+}
+
+.pad {
+  width: var(--pad-w);
+  height: var(--pad-h);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px dashed #8a735c;
+  background-color: #eadfce;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(138, 115, 92, 0.28) 0 1px,
+    transparent 1px 7px
+  );
+}
+
+.pad-tag {
+  padding: 0.18rem 0.38rem;
+  border: 1px solid var(--line, #d2c7b8);
+  background: var(--paper, #f3eee6);
+  color: var(--ink, #1a1612);
+  font-family: var(--sans, "Heebo", "Arial Hebrew", Arial, sans-serif);
+  font-size: 0.64rem;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.eclate-legend {
+  list-style: none;
+  margin-block-start: 16px;
+  padding: 0;
+}
+
+.eclate-legend li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.75rem;
+  padding-block-start: 12px;
+  border-block-start: 1px solid var(--line, #d2c7b8);
+}
+
+.eclate-legend li + li { margin-block-start: 12px; }
+
+.eclate-idx {
+  flex: 0 0 auto;
+  min-width: 1.1rem;
+  color: var(--wax, #722e2a);
+  font-family: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  font-size: 1.05rem;
+  line-height: 1;
+}
+
+.eclate-names {
+  display: flex;
+  flex: 1 1 12rem;
+  flex-wrap: wrap;
+  align-items: baseline;
+  min-width: 0;
+  direction: ltr;
+}
+
+.eclate-names span { color: var(--soft, #2c261f); }
+
+.eclate-names [lang="fr"],
+.eclate-names [lang="en"] {
+  font-family: "Newsreader", "Iowan Old Style", "Palatino Linotype", Palatino, serif;
+  font-size: 1.05rem;
+}
+
+.eclate-names [lang="en"] { font-style: italic; }
+
+.eclate-names [lang="he"] {
+  font-family: var(--hebrew, "Frank Ruhl Libre", "David Libre", "Times New Roman", serif);
+  font-size: 1.2rem;
+}
+
+.eclate-names span:not(:last-child)::after {
+  content: "·";
+  margin-inline: 0.45rem;
+  color: var(--line, #d2c7b8);
+  font-style: normal;
+}
+
+html[lang="fr"] .eclate-names [lang="fr"],
+html[lang="en"] .eclate-names [lang="en"],
+html[lang="he"] .eclate-names [lang="he"],
+html:not([lang="en"]):not([lang="he"]) .eclate-names [lang="fr"] {
+  color: var(--ink, #1a1612);
+}
+
+.eclate-opt {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.25rem 0.5rem;
+  direction: ltr;
+  padding: 0.12rem 0.45rem;
+  border: 1px solid var(--wax, #722e2a);
+  color: var(--wax, #722e2a);
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+  line-height: 1.45;
+  text-transform: uppercase;
+}
+
+.eclate-opt [lang="he"] {
+  font-family: var(--hebrew, "Frank Ruhl Libre", "David Libre", "Times New Roman", serif);
+  font-size: 0.88rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.eclate-note {
+  display: grid;
+  gap: 0.15rem;
+  margin-block-start: 16px;
+  color: var(--soft, #2c261f);
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.eclate-note [lang="he"] {
+  font-family: var(--hebrew, "Frank Ruhl Libre", "David Libre", "Times New Roman", serif);
+  font-size: 1rem;
+}
+
+@media (min-width: 391px) {
+  .eclate {
+    --stage: 560px;
+    --seal: 50px;
+    --lid-w: 196px;
+    --lid-h: 58px;
+    --plat-w: 220px;
+    --plat-h: 66px;
+    --cert-w: 136px;
+    --cert-h: 84px;
+    --pad-w: 204px;
+    --pad-h: 42px;
+    --callout: 8.6rem;
+  }
+
+  .eclate-seal { --y: -42px; }
+  .eclate-lid { --y: -6px; }
+  .eclate-plat { --y: 22px; }
+  .eclate-cert { --y: 26px; }
+  .eclate-pad { --y: 58px; }
+
+  .eclate.is-open .eclate-seal { --y: -200px; }
+  .eclate.is-open .eclate-lid { --y: -108px; }
+  .eclate.is-open .eclate-plat { --y: 0px; }
+  .eclate.is-open .eclate-cert { --y: 120px; }
+  .eclate.is-open .eclate-pad { --y: 226px; }
+
+  .eclate-cert .eclate-glyph { transform: translateX(28px) rotate(-10deg); }
+  .eclate.is-open .eclate-cert .eclate-glyph { transform: translateX(0) rotate(0deg); }
+}
+
+/* Mobile 390 */
+@media (max-width: 390px) {
+  .eclate-stage { padding-inline: 0.75rem; }
+
+  .eclate-hint {
+    gap: 0.25rem 0.5rem;
+    letter-spacing: 0.06em;
+  }
+
+  .eclate-names span:not(:last-child)::after { margin-inline: 0.3rem; }
+
+  .eclate-legend li { gap: 0.3rem 0.5rem; }
+
+  .eclate-opt {
+    letter-spacing: 0.08em;
+    max-width: 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .eclate-layer,
+  .eclate-glyph,
+  .eclate-num,
+  .eclate-stack::before { transition: none; }
+}

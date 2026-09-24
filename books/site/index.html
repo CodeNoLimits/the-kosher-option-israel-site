@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Reading room</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500&amp;family=Newsreader:ital,wght@0,400;0,500;1,450&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip" href="#shelf" data-t="skip">Skip to the covers</a>
+
+  <header class="bar">
+    <p class="room"><a href="../../site/index.html">The Kosher Option Israel</a> / <span data-t="room">Reading room</span></p>
+    <p class="draft" data-t="draft">Draft, not signed, not a partnership.</p>
+  </header>
+
+  <main>
+    <h1 data-t="heading">Two manuscripts</h1>
+    <p class="lede" data-t="lede">Both drafts can be opened. Neither is signed. The manuscripts are in English.</p>
+
+    <div class="shelf" id="shelf">
+      <article class="cover" aria-labelledby="why-title">
+        <div class="spine" aria-hidden="true"><span>Why the Table</span></div>
+        <div class="face">
+          <p class="kind" data-t="kind">Manuscript</p>
+          <h2 id="why-title">Why the Table</h2>
+          <p class="status" id="why-status" data-t="whyStatus">English research draft · 32 A4 pages · five labeled editorial images. Unsigned.</p>
+          <a class="open" href="read.html?book=why" data-t="turn">Turn pages</a>
+          <a class="open" href="../why-the-table/v2/book.html" data-t="text">Text version</a>
+          <a class="open" href="../why-the-table/v2/book.pdf" data-t="pdf">Download PDF</a>
+        </div>
+      </article>
+
+      <article class="cover" aria-labelledby="dream-title">
+        <div class="spine" aria-hidden="true"><span>DreamNova and Leeya</span></div>
+        <div class="face">
+          <p class="kind" data-t="kind">Manuscript</p>
+          <h2 id="dream-title">DreamNova and Leeya</h2>
+          <p class="status" id="dream-status" data-t="methodStatus">English method draft · 14 A4 pages · two labeled editorial images. Unsigned.</p>
+          <a class="open" href="read.html?book=method" data-t="turn">Turn pages</a>
+          <a class="open" href="../dreamnova-and-leeya/book.html" data-t="text">Text version</a>
+          <a class="open" href="../dreamnova-and-leeya/book.pdf" data-t="pdf">Download PDF</a>
+        </div>
+      </article>
+    </div>
+  </main>
+
+  <footer class="colophon">
+    <p data-t="draft">Draft, not signed, not a partnership.</p>
+  </footer>
+
+  <script src="i18n.js"></script>
+  <script>
+    document.querySelectorAll("a.open").forEach(function (link) {
+      link.addEventListener("click", function (event) {
+        if (link.getAttribute("aria-disabled") === "true") event.preventDefault();
+      });
+    });
+  </script>
+</body>
+</html>

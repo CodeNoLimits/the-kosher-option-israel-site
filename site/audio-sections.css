@@ -1,0 +1,7 @@
+.inner-audio { margin-top: 2rem; }
+.inner-audio .audio-trigger { min-height: 44px; }
+.inner-audio-note { margin: .15rem 0 0; color: #e1cdb5; font-size: .78rem; letter-spacing: .015em; }
+.narration-transcript { padding: 1.1rem clamp(1.25rem,5.2vw,6.5rem); background: #201813; border-bottom: 1px solid var(--line); color: #e8dacb; }
+.narration-transcript summary { display: list-item; width: fit-content; cursor: pointer; font-size: .85rem; font-weight: 600; }
+.narration-transcript summary:focus-visible { outline: 2px solid #f4d7a7; outline-offset: 4px; }
+.narration-transcript p { max-width: 72rem; margin: 1.2rem 0 .3rem; line-height: 1.75; white-space: pre-wrap; }
